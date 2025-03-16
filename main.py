@@ -1,29 +1,35 @@
-import random
-import time
+import telebot
+from bot_logic import gen_pass, gen_emodji, flip_coin  # Импортируем функции из bot_logic
 
+# Замени 'TOKEN' на токен твоего бота
+bot = telebot.TeleBot("TOKEN")
 
-eng_words = ['Hi','Bye','Task', 'Programm']
-ru_words = ['Привет','Пока','Задача', 'Программа']
-score = 0
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    bot.reply_to(message, "Привет! Я твой Telegram бот. Напиши команду /hello, /bye, /pass, /emodji или /coin  ")
 
-mod = input("Выбери режим работы тренажера: 0 - добавить новые слова, 1 - тренироваться: \n")
-while ((mod != '0') and (mod != '1')):
-    mod = input("Недопустимый символ! Выбери 0 или 1. (0 - добавить новые слова, 1 - тренироваться) \n")
+@bot.message_handler(commands=['hello'])
+def send_hello(message):
+    bot.reply_to(message, "Привет! Как дела?")
 
-if mod == "1":
-    print("Переведи как можно больше слов правильно! У тебя 10 попыток!")
-    for i in range(10):
-        number = random.randint(0, len(eng_words))
-        print("Как переводится слово: " + eng_words[number])
-        if input() == ru_words[number]:
-            print("Отлично!!!")
-            score += 1
-        else:
-            print("Нет... Это слово - " + ru_words[number])
-else:
-    word = input("Введите слово на русском языке: ")
-    translate = input("Введите перевод этого слова: ")
-    if len(word) > 0 and len(translate) > 0:
-        ru_words.append(word)
-        eng_words.append(translate)
-        print("Слово успешно добавлено!")
+@bot.message_handler(commands=['bye'])
+def send_bye(message):
+    bot.reply_to(message, "Пока! Удачи!")
+
+@bot.message_handler(commands=['pass'])
+def send_password(message):
+    password = gen_pass(10)  # Устанавливаем длину пароля, например, 10 символов
+    bot.reply_to(message, f"Вот твой сгенерированный пароль: {password}")
+
+@bot.message_handler(commands=['emodji'])
+def send_emodji(message):
+    emodji = gen_emodji()
+    bot.reply_to(message, f"Вот эмоджи': {emodji}")
+
+@bot.message_handler(commands=['coin'])
+def send_coin(message):
+    coin = flip_coin()
+    bot.reply_to(message, f"Монетка выпала так: {coin}")
+
+# Запускаем бота
+bot.polling()
