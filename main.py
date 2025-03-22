@@ -11,7 +11,7 @@ def send_welcome(message):
     bot.reply_to(message, "Привет! Я твой Telegram бот. Напиши что-нибудь!")
     
 @bot.message_handler(commands=['hello'])
-def send_hello(message):
+def send_hello(message):  
    bot.reply_to(message, "Привет! Как дела?")
     
 @bot.message_handler(commands=['bye'])
